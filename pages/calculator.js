@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import { useState } from 'react'
+import Layout from '../components/Layout'
 
 const Calculator = () => {
     const [result, setResult] = useState(null)
@@ -156,26 +157,30 @@ const Calculator = () => {
     }
 
     return (
-        <div className="calculator">
+        <>
             <Head>
-                <title>Calculator</title>
+                <title>เครื่องคิดเลข</title>
             </Head>
-            <div className="wrapper">
-                <section className="screen">
-                    <div className="current">{result}</div>
-                </section>
-                <section className="calc-btn-row">
-                    {calcBtnRowList.map((item, key) => (
-                        <div className="calc_btn_row" key={key}>
-                            {item.map((e, index) => (
-                                <button key={index} className={e.class} onClick={() => handleClick(e.value)}>{e.value}</button>
+            <Layout>
+                <div className="calculator">
+                    <div className="wrapper">
+                        <section className="screen">
+                            <div className="current">{result}</div>
+                        </section>
+                        <section className="calc-btn-row">
+                            {calcBtnRowList.map((item, key) => (
+                                <div className="calc_btn_row" key={key}>
+                                    {item.map((e, index) => (
+                                        <button key={index} className={e.class} onClick={() => handleClick(e.value)}>{e.value}</button>
+                                    ))}
+                                </div>
                             ))}
-                        </div>
-                    ))}
-                </section>
+                        </section>
 
-            </div>
-        </div>
+                    </div>
+                </div>
+            </Layout>
+        </ >
     )
 }
 
