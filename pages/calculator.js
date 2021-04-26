@@ -2,7 +2,7 @@ import Head from 'next/head'
 import { useState } from 'react'
 
 const Calculator = () => {
-    const [result, setResult] = useState('0')
+    const [result, setResult] = useState(null)
     const [memory, setMemory] = useState(null)
     const [operator, setOperator] = useState(null)
     const [clearLog, setclearLog] = useState(false)
@@ -99,7 +99,7 @@ const Calculator = () => {
 
     const handleClick = (value) => {
         if (value >= 0 && value <= 9) pushResult(value);
-        else if (value === "c") setResult('0');
+        else if (value === "c") setResult(null);
         else if (value === "+/-") setResult(parseFloat(result) * -1)
         else if (value === "%") setResult((parseFloat(result) / 100));
         else if (value === "÷") pushOperator(value);
@@ -107,13 +107,14 @@ const Calculator = () => {
         else if (value === "-") pushOperator(value);
         else if (value === "+") pushOperator(value);
         else if (value === "=") operation();
+        else if (value === ".") pushDot();
     }
     const pushResult = (value) => {
         // console.log('pushResult :>> ', value);
         if (clearLog) {
             setclearLog(false)
             setResult(value)
-        } else if (result != 0) {
+        } else if (result) {
             setResult(result + value)
         } else {
             setResult(value)
@@ -122,7 +123,7 @@ const Calculator = () => {
 
     const pushOperator = (value) => {
         setMemory(result) //เก็บค่า ของ result
-        setResult('0')
+        setResult(null)
         setOperator(value)
     }
 
@@ -132,6 +133,13 @@ const Calculator = () => {
         setclearLog(true)
         setResult(calResult(parseFloat(memory), parseFloat(result), operator))
     }
+
+    const pushDot = () => {
+        const res = result.toString()
+        if (!res.includes('.'))
+            setResult(res + ".")
+    }
+
     const calResult = (valA, valB, opr) => {
         switch (opr) {
             case "+":
