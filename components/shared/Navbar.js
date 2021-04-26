@@ -18,7 +18,9 @@ const Navbar = () => {
                         </Link>
                     </li>
                     <li className="nav-item">
-                        <a className={`nav-link ${router.asPath === '/user' ? "active" : ""}`}>ข้อมูลผู้ใช้</a>
+                        <Link href="/user">
+                            <a className={`nav-link ${router.asPath === '/user' ? "active" : ""}`}>ข้อมูลผู้ใช้</a>
+                        </Link>
                     </li>
                 </ul>
 

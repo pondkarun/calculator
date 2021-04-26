@@ -10,8 +10,8 @@
     "deploy": "npm run build && npm run export"
   },
   "dependencies": {
-    "antd": "^4.15.2",
     "@ant-design/icons": "^4.6.2",
+    "antd": "^4.15.2",
     "axios": "^0.21.1",
     "moment": "^2.29.1",
     "next": "10.1.3",
