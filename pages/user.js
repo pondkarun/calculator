@@ -1,15 +1,58 @@
 import Layout from "../components/Layout"
 import Head from 'next/head'
-import { Form, Input, Button, Select, DatePicker, Radio, Table, Tag, Space } from 'antd';
-import { useState } from "react";
+import { Form, Input, Button, Select, DatePicker, Radio, Table } from 'antd';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { useEffect, useState } from "react";
+import { Notifications } from "../shared/notifications";
+import Country from '../service/country-list-th'
+import { uuid } from 'uuidv4';
 const { Option } = Select;
 
 const User = () => {
-    const onFinish = () => {
 
+    const defaultValueModel = {
+        id: null,
+        title: null,
+        firstname: null,
+        lastname: null,
+        birthday: null,
+        nationaliy: null,
+        citizenid: null,
+        gender: null,
+        prefix: "66",
+        phone: null,
+        passport: null,
+        expectedSalary: null
     }
-    const onFinishFailed = () => {
 
+    const [data, setData] = useState([])
+    const [model, setModel] = useState(defaultValueModel)
+    const [form] = Form.useForm();
+
+    useEffect(() => {
+        form.setFieldsValue(defaultValueModel);
+    }, [])
+
+    const onFinish = (val) => {
+        console.log(`model`, model)
+        if (model.id) {
+            const tempData = data;
+            const index = data.findIndex(e => e.id == model.id);
+            console.log(`index`, index)
+            tempData[index] = model
+            console.log(`tempData`, tempData)
+            setData([])
+            setData(tempData)
+        } else {
+            const tempModel = model;
+            tempModel.id = uuid();
+            setData([...data, tempModel])
+        }
+        form.setFieldsValue(defaultValueModel);
+        setModel(defaultValueModel)
+    }
+    const onFinishFailed = (error) => {
+        Notifications(`กรอกข้อมูลให้ครบถ้วน`, "warning")
     }
 
     const autoTab = (value) => {
@@ -42,88 +85,65 @@ const User = () => {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
-            render: text => <a>{text}</a>,
+            render: (a, b) => <p>{b.title} {b.firstname} {b.lastname}</p>,
         },
         {
-            title: 'Age',
-            dataIndex: 'age',
-            key: 'age',
+            title: 'Gender',
+            dataIndex: 'gender',
+            key: 'gender',
         },
         {
-            title: 'Address',
-            dataIndex: 'address',
-            key: 'address',
+            title: 'Mobile Phone',
+            dataIndex: 'phone',
+            key: 'phone',
         },
         {
-            title: 'Tags',
-            key: 'tags',
-            dataIndex: 'tags',
-            render: tags => (
-                <>
-                    {tags.map(tag => {
-                        let color = tag.length > 5 ? 'geekblue' : 'green';
-                        if (tag === 'loser') {
-                            color = 'volcano';
-                        }
-                        return (
-                            <Tag color={color} key={tag}>
-                                {tag.toUpperCase()}
-                            </Tag>
-                        );
-                    })}
-                </>
-            ),
+            title: 'Nationaliy',
+            dataIndex: 'nationaliy',
+            key: 'nationaliy',
         },
         {
             title: 'Action',
             key: 'action',
-            render: (text, record) => (
-                <Space size="middle">
-                    <a>Invite {record.name}</a>
-                    <a>Delete</a>
-                </Space>
+            render: (a, b) => (
+                <>
+                    <a style={{ paddingRight: 5 }} onClick={() => delEditRow(b, "edit")}><EditOutlined /></a>
+                    <a onClick={() => delEditRow(b, "del")}><DeleteOutlined /></a>
+                </>
             ),
         },
     ];
 
-    const data = [
-        {
-            key: '1',
-            name: 'John Brown',
-            age: 32,
-            address: 'New York No. 1 Lake Park',
-            tags: ['nice', 'developer'],
-        },
-        {
-            key: '2',
-            name: 'Jim Green',
-            age: 42,
-            address: 'London No. 1 Lake Park',
-            tags: ['loser'],
-        },
-        {
-            key: '3',
-            name: 'Joe Black',
-            age: 32,
-            address: 'Sidney No. 1 Lake Park',
-            tags: ['cool', 'teacher'],
-        },
-    ];
+    const allowInteger = (event, elem) => {
+        if (event) {
+            if (event.which < 48 || event.which > 57) {
+                event.preventDefault();
+            }
+        }
+    }
+
+    const delEditRow = (item, type) => {
+        if (type === "edit") {
+            console.log(`edit`, item)
+            form.setFieldsValue(item);
+            setModel(item);
+        } else if (type === "del") {
+            console.log(`del`, item)
+        }
+    }
+
 
     const [selectedRowKeys, setSelectedRowKeys] = useState([])
-    const onSelectChange = (item , obj) => {
+    const onSelectChange = (item, obj) => {
         console.log('selectedRowKeys changed: ', item);
         console.log('selectedRowKeys obj: ', obj);
         setSelectedRowKeys([selectedRowKeys, ...item]);
     };
 
-
-
     const rowSelection = {
         selectedRowKeys,
         onChange: onSelectChange,
     };
-
 
 
     return (
@@ -134,6 +154,7 @@ const User = () => {
             <div className="card">
                 <div className="card-body">
                     <Form
+                        form={form}
                         name="basic"
                         initialValues={{ remember: true }}
                         onFinish={onFinish}
@@ -150,10 +171,11 @@ const User = () => {
                                             name="title"
                                             rules={[{ required: true, message: 'Please input your Title!' }]}
                                         >
-                                            <Select allowClear>
-                                                <Option value="male">male</Option>
-                                                <Option value="female">female</Option>
-                                                <Option value="other">other</Option>
+                                            <Select allowClear onChange={(event) => setModel({ ...model, title: event, })}>
+                                                <Option value="Mr.">Mr.</Option>
+                                                <Option value="Mrs.">Mrs.</Option>
+                                                <Option value="Miss">Miss</Option>
+                                                <Option value="Ms.">Ms.</Option>
                                             </Select>
                                         </Form.Item>
                                     </div>
@@ -162,6 +184,7 @@ const User = () => {
                                             label="Firstname"
                                             name="firstname"
                                             rules={[{ required: true, message: 'Please input your Firstname!' }]}
+                                            onChange={(event) => setModel({ ...model, firstname: event.target.value, })}
                                         >
                                             <Input />
                                         </Form.Item>
@@ -171,6 +194,7 @@ const User = () => {
                                             label="Lastname"
                                             name="lastname"
                                             rules={[{ required: true, message: 'Please input your Lastname!' }]}
+                                            onChange={(event) => setModel({ ...model, lastname: event.target.value, })}
                                         >
                                             <Input />
                                         </Form.Item>
@@ -185,7 +209,7 @@ const User = () => {
                                             rules={[{ required: true, message: 'Please input your Birthday!' }]}
 
                                         >
-                                            <DatePicker style={{ width: "100%" }} />
+                                            <DatePicker style={{ width: "100%" }} onChange={(event) => setModel({ ...model, birthday: event, })} />
                                         </Form.Item>
                                     </div>
                                     <div className="col-5">
@@ -193,10 +217,10 @@ const User = () => {
                                             label="Nationaliy"
                                             name="nationaliy"
                                         >
-                                            <Select allowClear>
-                                                <Option value="male">male</Option>
-                                                <Option value="female">female</Option>
-                                                <Option value="other">other</Option>
+                                            <Select showSearch allowClear filterOption={(input, option) =>
+                                                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                            } onChange={(event) => setModel({ ...model, nationaliy: event, })}>
+                                                {Country.map((e, i) => <Option key={i} value={e.name}>{e.name}</Option>)}
                                             </Select>
                                         </Form.Item>
                                     </div>
@@ -207,6 +231,7 @@ const User = () => {
                                         <Form.Item
                                             label="Citizenid"
                                             name="citizenid"
+                                            onChange={(event) => setModel({ ...model, citizenid: event.target.value, })}
                                         >
                                             <Input onKeyUp={(e) => e.target.value = autoTab(e.target.value)} maxLength={17} placeholder="X-XXXX-XXXXX-XX-X" />
                                         </Form.Item>
@@ -219,10 +244,10 @@ const User = () => {
                                             label="Gender"
                                             name="gender"
                                         >
-                                            <Radio.Group >
-                                                <Radio value={1}>Male</Radio>
-                                                <Radio value={2}>Female</Radio>
-                                                <Radio value={3}>Unisex</Radio>
+                                            <Radio.Group onChange={(event) => setModel({ ...model, gender: event.target.value, })}>
+                                                <Radio value="Male">Male</Radio>
+                                                <Radio value="Female">Female</Radio>
+                                                <Radio value="Unisex">Unisex</Radio>
                                             </Radio.Group>
                                         </Form.Item>
                                     </div>
@@ -231,18 +256,18 @@ const User = () => {
                                 <div className="row">
                                     <div className="col-6">
                                         <Form.Item
-                                            label="Mobile Phone"
                                             name="phone"
+                                            label="Mobile Phone"
                                             rules={[{ required: true, message: 'Please input your Mobile Phone!' }]}
-
+                                            onChange={(event) => setModel({ ...model, phone: event.target.value, })}
                                         >
-                                            <Input.Group compact>
-                                                <Select style={{ width: '30%' }} defaultValue="Home">
-                                                    <Option value="Home">Home</Option>
-                                                    <Option value="Company">Company</Option>
-                                                </Select>
-                                                <Input style={{ width: '70%' }} />
-                                            </Input.Group>
+                                            <Input addonBefore={
+                                                <Form.Item name="prefix" noStyle>
+                                                    <Select style={{ width: 70 }} defaultValue="66" value="66" onChange={(event) => setModel({ ...model, prefix: event, })}>
+                                                        <Option value="66">+66</Option>
+                                                    </Select>
+                                                </Form.Item>
+                                            } style={{ width: '70%' }} />
                                         </Form.Item>
                                     </div>
                                 </div>
@@ -251,7 +276,8 @@ const User = () => {
                                     <div className="col-5">
                                         <Form.Item
                                             label="Passport No"
-                                            name="Passport"
+                                            name="passport"
+                                            onChange={(event) => setModel({ ...model, passport: event.target.value, })}
                                         >
                                             <Input />
                                         </Form.Item>
@@ -264,8 +290,9 @@ const User = () => {
                                             label="Expected Salary"
                                             name="expectedSalary"
                                             rules={[{ required: true, message: 'Please input your Expected Salary!' }]}
+                                            onChange={(event) => setModel({ ...model, expectedSalary: event.target.value, })}
                                         >
-                                            <Input addonAfter="THB" />
+                                            <Input onKeyPress={(event) => allowInteger(event, this)} addonAfter="THB" style={{ width: "100%" }} />
                                         </Form.Item>
                                     </div>
                                     <div className="col-4" />

@@ -23,6 +23,7 @@
     "redux": "^4.1.0",
     "redux-thunk": "^2.3.0",
     "sweetalert2": "^10.16.6",
+    "uuidv4": "^6.2.7",
     "xlsx": "^0.16.9"
   },
   "devDependencies": {
