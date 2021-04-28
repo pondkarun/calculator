@@ -7,9 +7,12 @@ import { Notifications } from "../shared/notifications";
 import Country from '../service/country-list-th'
 import { uuid } from 'uuidv4';
 const { Option } = Select;
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from '../redux/actions/userActions'
 
 const User = () => {
-
+    const { listUser } = useSelector(({ user }) => user);
+    const dispatch = useDispatch();
     const defaultValueModel = {
         id: null,
         title: null,
@@ -30,7 +33,9 @@ const User = () => {
     const [form] = Form.useForm();
 
     useEffect(() => {
+        // console.log(`listUser`, listUser)
         form.setFieldsValue(defaultValueModel);
+        setData(listUser)
     }, [])
 
     const onFinish = (val) => {
@@ -43,13 +48,17 @@ const User = () => {
             console.log(`tempData`, tempData)
             setData([])
             setData(tempData)
+            dispatch(setUser(tempData))
         } else {
             const tempModel = model;
             tempModel.id = uuid();
-            setData([...data, tempModel])
+            const temp = [...data, tempModel]
+            setData(temp)
+            dispatch(setUser(temp))
         }
         form.setFieldsValue(defaultValueModel);
         setModel(defaultValueModel)
+
     }
     const onFinishFailed = (error) => {
         Notifications(`กรอกข้อมูลให้ครบถ้วน`, "warning")
@@ -313,7 +322,7 @@ const User = () => {
             <div style={{ padding: 5 }} />
             <div className="card">
                 <div>
-                    <Table rowSelection={rowSelection} columns={columns} dataSource={data} />
+                    <Table rowSelection={rowSelection} columns={columns} dataSource={data} rowKey={record => record.id} />
                 </div>
             </div>
 
