@@ -28,13 +28,14 @@ const User = () => {
         expectedSalary: null
     }
 
+    const [selectedRowKeys, setSelectedRowKeys] = useState([])
     const [data, setData] = useState([])
     const [model, setModel] = useState(defaultValueModel)
     const [form] = Form.useForm();
 
     useEffect(() => {
         form.setFieldsValue(defaultValueModel);
-        console.log(`listUser`, listUser)
+        console.log(`listUser init`, listUser)
         setData(listUser)
     }, [listUser])
 
@@ -131,18 +132,26 @@ const User = () => {
         }
     }
 
-    const delEditRow = (item, type) => {
+    const delEditRow = async (item, type) => {
         if (type === "edit") {
-            console.log(`edit`, item)
+            // console.log(`edit`, item)
             form.setFieldsValue(item);
             setModel(item);
         } else if (type === "del") {
-            console.log(`del`, item)
+            let arrData = data;
+            const index = arrData.findIndex(e => e.id == item.id)
+            if (index != -1) {
+                arrData.splice(index, 1);
+                // console.log(`arrData DEL`, arrData)
+                dispatch(setUser(arrData))
+                await setData([])
+                await setData(arrData)
+            }
         }
     }
 
 
-    const [selectedRowKeys, setSelectedRowKeys] = useState([])
+
     const onSelectChange = (item, obj) => {
         setSelectedRowKeys([selectedRowKeys, ...item]);
     };
@@ -151,6 +160,24 @@ const User = () => {
         selectedRowKeys,
         onChange: onSelectChange,
     };
+
+    const deleteArr = async () => {
+        console.log(`deleteArr`, selectedRowKeys)
+        const arrData = data;
+        selectedRowKeys.forEach(x => {
+            const index = arrData.findIndex(e => e.id === x)
+            if (index !== -1)
+                arrData.splice(index, 1);
+
+            if (index != -1) {
+                arrData.splice(index, 1);
+            }
+        });
+        console.log(`arrData`, arrData)
+        dispatch(setUser(arrData))
+        await setData([])
+        await setData(arrData)
+    }
 
 
     return (
@@ -319,6 +346,9 @@ const User = () => {
             </div>
             <div style={{ padding: 5 }} />
             <div className="card">
+                <div className="p-3">
+                    <button className="btn btn-sm btn-danger" onClick={deleteArr}>DELETE</button>
+                </div>
                 <div>
                     <Table rowSelection={rowSelection} columns={columns} dataSource={data} rowKey={record => record.id} />
                 </div>
