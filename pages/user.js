@@ -33,19 +33,19 @@ const User = () => {
     const [form] = Form.useForm();
 
     useEffect(() => {
-        // console.log(`listUser`, listUser)
         form.setFieldsValue(defaultValueModel);
+        console.log(`listUser`, listUser)
         setData(listUser)
-    }, [])
+    }, [listUser])
 
     const onFinish = (val) => {
         console.log(`model`, model)
         if (model.id) {
             const tempData = data;
             const index = data.findIndex(e => e.id == model.id);
-            console.log(`index`, index)
+            // console.log(`index`, index)
             tempData[index] = model
-            console.log(`tempData`, tempData)
+            // console.log(`tempData`, tempData)
             setData([])
             setData(tempData)
             dispatch(setUser(tempData))
@@ -144,8 +144,6 @@ const User = () => {
 
     const [selectedRowKeys, setSelectedRowKeys] = useState([])
     const onSelectChange = (item, obj) => {
-        console.log('selectedRowKeys changed: ', item);
-        console.log('selectedRowKeys obj: ', obj);
         setSelectedRowKeys([selectedRowKeys, ...item]);
     };
 
