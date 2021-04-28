@@ -1,3 +1,4 @@
+import { wrapper } from '../redux/store'
 import 'antd/dist/antd.css';
 import 'react-notifications-component/dist/theme.css'
 import '../styles/scss/main.scss'
@@ -13,4 +14,4 @@ function MyApp({ Component, pageProps }) {
   )
 }
 
-export default MyApp
+export default wrapper.withRedux(MyApp)

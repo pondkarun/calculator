@@ -1,7 +1,7 @@
 import { applyMiddleware, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import { createWrapper } from 'next-redux-wrapper';
-import rootReducer from './reducers/rootReducer';
+import rootReducers from './reducers/rootReducer';
 
 const middleware = [thunk];
 const composeEnhancers = typeof window != 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
