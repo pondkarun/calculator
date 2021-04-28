@@ -1,5 +1,15 @@
-import { DECREMENT_USER, INCREMENT_USER } from '../actions/userActions'
 
-const userReducer = (state , action) => {
-
+const userReducer = (state = [], action) => {
+    switch (action.type) {
+        case "SET_USER":
+            return {
+                ...state, users: state.users
+            }
+        default:
+            return {
+                ...state
+            }
+    }
 }
+
+export default userReducer;
