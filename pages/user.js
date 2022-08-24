@@ -3,7 +3,7 @@ import Head from 'next/head'
 import { Form, Input, Button, Select, DatePicker, Radio, Table } from 'antd';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { useEffect, useState } from "react";
-import { Notifications } from "../shared/notifications";
+// import { Notifications } from "../shared/notifications";
 import Country from '../service/country-list-th'
 import { uuid } from 'uuidv4';
 const { Option } = Select;
@@ -62,7 +62,7 @@ const User = () => {
 
     }
     const onFinishFailed = (error) => {
-        Notifications(`กรอกข้อมูลให้ครบถ้วน`, "warning")
+        // Notifications(`กรอกข้อมูลให้ครบถ้วน`, "warning")
     }
 
     const autoTab = (value) => {

@@ -204,7 +204,7 @@ const Calculator = () => {
             <Head>
                 <title>เครื่องคิดเลข</title>
             </Head>
-            <Layout>
+            {/* <Layout> */}
                 <div className="calculator">
                     <div className="wrapper">
                         <section className="screen">
@@ -223,7 +223,7 @@ const Calculator = () => {
                     </div>
                 </div>
 
-                <div className="upload">
+                {/* <div className="upload">
                     <Upload
                         name="avatar"
                         listType="picture-card"
@@ -257,8 +257,8 @@ const Calculator = () => {
                             alert("Error")
                         }
                     }}>Upload</button>
-                </div>
-            </Layout>
+                </div> */}
+            {/* </Layout> */}
         </ >
     )
 }
